@@ -17,14 +17,14 @@
   --r:24px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:90px}
+html{overflow-x:clip;scroll-behavior:smooth;scroll-padding-top:90px}
 body{font-family:var(--f-txt);color:var(--marino);background:var(--blanco);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 :focus-visible{outline:3px solid var(--violeta);outline-offset:3px}
-.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
-section{position:relative;overflow:hidden;padding:110px 0}
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 24px}
+section{position:relative;padding:110px 0}
 h1,h2,h3{font-family:var(--f-tit);line-height:1.15;letter-spacing:-.01em}
 h2{font-size:clamp(26px,3.6vw,44px)}
 .sub{color:var(--suave);font-size:clamp(15px,1.6vw,18px);margin-top:8px}
@@ -75,12 +75,12 @@ nav.main a:hover::after,nav.main a.act::after{transform:scaleX(1)}
 .hero p.lead{color:var(--suave);font-size:clamp(16px,2vw,21px);max-width:520px}
 .hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 18px}
 .hero .ok{color:var(--suave);font-size:14px;display:flex;gap:20px;flex-wrap:wrap}
-.hero-art{position:relative;display:grid;place-items:center;min-height:360px}
-.hero-art img.pose{width:min(78vw,340px);animation:bob 5s ease-in-out infinite;filter:drop-shadow(0 30px 30px rgba(3,19,32,.15))}
+.hero-art{position:relative;display:grid;place-items:center;min-height:360px;padding-bottom:34px}
+.hero-art::after{content:"";position:absolute;left:50%;bottom:8px;width:62%;height:46px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(3,19,32,.22) 0%,rgba(3,19,32,0) 70%);z-index:0}
+.hero-art img.pose{position:relative;z-index:1;width:min(78vw,340px);animation:bob 5s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-model-viewer{width:100%;height:min(74vh,680px);--poster-color:transparent;background:transparent}
 .scroll-hint{position:absolute;left:24px;bottom:26px;font-family:var(--f-ui);font-size:13px;color:var(--suave);display:none}
-@media(min-width:960px){.hero{grid-template-columns:1.05fr .95fr}.scroll-hint{display:block}}
+@media(min-width:960px){.hero{grid-template-columns:1.05fr .95fr}.scroll-hint{display:block}.hero-art img.pose{width:auto;height:min(70vh,640px);max-width:100%}}
 /* proyectos */
 .head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:34px}
 .filters{display:flex;gap:8px;flex-wrap:wrap}
@@ -124,7 +124,6 @@ model-viewer{width:100%;height:min(74vh,680px);--poster-color:transparent;backgr
 .nums small{color:var(--suave);font-size:12px}
 @media(min-width:900px){.mpanel{grid-template-columns:1fr 1fr;padding:30px}}
 /* servicios */
-#servicios{background:linear-gradient(#fff,#faf9ff)}
 .svc{display:grid;gap:16px;margin-top:34px}
 .scard{border:2px solid var(--borde);border-radius:var(--r);padding:26px 24px;background:#fff;transform-style:preserve-3d;transition:box-shadow .3s,border-color .3s;display:flex;flex-direction:column;gap:12px;will-change:transform}
 .scard:hover{border-color:var(--violeta);box-shadow:0 24px 40px -22px rgba(84,40,214,.45)}
@@ -169,7 +168,6 @@ model-viewer{width:100%;height:min(74vh,680px);--poster-color:transparent;backgr
 @keyframes chipf{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(min-width:960px){.why{grid-template-columns:1fr 520px;gap:70px;align-items:start}}
 /* planes */
-#planes{background:linear-gradient(#fff,#faf9ff)}
 .tabs{display:flex;gap:8px;justify-content:center;margin:26px 0 10px}
 .tabs button{height:42px;padding:0 20px;border-radius:999px;border:2px solid var(--violeta);color:var(--violeta);font-family:var(--f-ui);font-weight:600;font-size:14px}
 .tabs button.on{background:var(--violeta);color:#fff}
@@ -262,7 +260,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
       <div class="cta"><a class="btn" href="#contacto">Cuéntanos tu idea</a><a class="btn out" href="#proyectos">Ver proyectos</a></div>
       <div class="ok"><span>✓ Diagnóstico gratuito</span><span>✓ Sin compromiso</span></div>
     </div>
-    <div class="hero-art" id="heroArt"><img class="pose" id="heroPose" src="assets/lumi_8_toca.png" alt="Lumine, la mascota de BitArt, señalando"></div>
+    <div class="hero-art" id="heroArt"><img class="pose" id="heroPose" src="assets/lumi_1_saluda.png" alt="Lumine, la mascota de BitArt, saludando"></div>
   </div>
   <div class="scroll-hint">Desliza ↓</div>
 </section>
@@ -406,7 +404,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 <script>
 (function(){
 const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
@@ -425,31 +422,6 @@ function setMenu(o){menu.classList.toggle('open',o);burger.setAttribute('aria-ex
 burger.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
 $$('#menu a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
 addEventListener('keydown',e=>{if(e.key==='Escape'){setMenu(false);closeModal()}});
-
-/* entrada: robot 3D en pantalla grande, imagen en celular */
-const art=$('#heroArt');
-let mv=null;
-function mountRobot(){
-  if(!wide()||reduced||mv||!customElements.get||!window.customElements) return;
-  mv=document.createElement('model-viewer');
-  mv.setAttribute('src','assets/BitArt_Robot_Web.glb');
-  mv.setAttribute('alt','Lumine en 3D, mira hacia donde mueves el cursor');
-  mv.setAttribute('camera-orbit','0deg 78deg 110%');
-  mv.setAttribute('field-of-view','28deg');
-  mv.setAttribute('interaction-prompt','none');
-  mv.setAttribute('disable-zoom','');
-  mv.setAttribute('shadow-intensity','0.6');
-  mv.setAttribute('exposure','1.1');
-  mv.setAttribute('loading','eager');
-  mv.addEventListener('load',()=>{ $('#heroPose').style.display='none'; });
-  mv.addEventListener('error',()=>{ mv.remove(); mv=null; $('#heroPose').style.display=''; });
-  art.appendChild(mv);
-  let tx=0,ty=0,cx=0,cy=0;
-  addEventListener('pointermove',e=>{ tx=(e.clientX/innerWidth-.5)*2; ty=(e.clientY/innerHeight-.5)*2; },{passive:true});
-  (function tick(){ cx+=(tx-cx)*.07; cy+=(ty-cy)*.07; if(mv) mv.setAttribute('camera-orbit',`${(cx*38).toFixed(1)}deg ${(78+cy*9).toFixed(1)}deg 110%`); requestAnimationFrame(tick); })();
-}
-mountRobot();
-addEventListener('resize',()=>{ if(wide()) mountRobot(); else if(mv){ mv.remove(); mv=null; $('#heroPose').style.display=''; } });
 
 /* animaciones con GSAP */
 if(hasGsap && !reduced){
