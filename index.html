@@ -263,7 +263,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
       <div class="cta"><a class="btn" href="#contacto">Cuéntanos tu idea</a><a class="btn out" href="#proyectos">Ver proyectos</a></div>
       <div class="ok"><span>✓ Diagnóstico gratuito</span><span>✓ Sin compromiso</span></div>
     </div>
-    <div class="hero-art" id="heroArt"><div class="lumi-wrap" id="lumiWrap" role="button" tabindex="0" aria-label="Saludar a Lumine"><span class="lumi-hi" id="lumiBubble" aria-hidden="true">¡Hola! Soy Lumine 👋</span><img class="pose" id="heroPose" src="assets/lumi_hd_1_saluda.webp" alt="Lumine, la mascota de BitArt, saludando"></div></div>
+    <div class="hero-art" id="heroArt"><div class="lumi-wrap" id="lumiWrap" role="button" tabindex="0" aria-label="Saludar a Lumine"><span class="lumi-hi" id="lumiBubble" aria-hidden="true">¡Hola! Soy Lumine 👋</span><img class="pose" id="heroPose" src="assets/lumi_hd_1_saluda.webp" alt="Lumine, la mascota de BitArt, saludando"><video class="pose" id="lumiVid" muted playsinline preload="auto" aria-hidden="true" style="display:none" src="assets/lumi_saluda.webm"></video></div></div>
   </div>
   <div class="scroll-hint">Desliza ↓</div>
 </section>
@@ -432,7 +432,7 @@ if(hasGsap && !reduced){
   tl.from('.hero h1 .w span',{yPercent:110,duration:.9,ease:'power4.out',stagger:.12})
     .from('.eyebrow',{opacity:0,y:14,duration:.6},'<')
     .from('.hero .lead,.hero .cta,.hero .ok',{opacity:0,y:24,duration:.7,stagger:.12,ease:'power3.out'},'-=.5')
-    .from('#heroPose',{yPercent:60,opacity:0,scale:.85,duration:1.1,ease:'back.out(1.5)'},'-=1.2');
+    .from('#lumiWrap .pose',{yPercent:60,opacity:0,scale:.85,duration:1.1,ease:'back.out(1.5)'},'-=1.2');
   $$('.reveal').forEach(el=>gsap.from(el,{y:44,opacity:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%',once:true}}));
   /* servicios: abanico */
   const sc=$$('#svc .scard');
@@ -485,8 +485,24 @@ secs.forEach(s=>io.observe(s));
 /* gesto de Lumine en la entrada: saluda solo y al tocarla */
 const lw=$('#lumiWrap'), lb=$('#lumiBubble');
 let waving=false;
+/* video de Lumine (Google Flow / Veo) con fondo transparente, si el navegador lo soporta */
+const vid=$('#lumiVid'), still=$('#heroPose');
+const safari=/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent)||/iPhone|iPad/.test(navigator.userAgent);
+let vidOn=false;
+if(vid && !reduced && !safari && vid.canPlayType('video/webm; codecs="vp9"')){
+  vid.addEventListener('loadeddata',()=>{ vid.style.display=''; still.style.display='none'; vidOn=true; });
+  vid.addEventListener('error',()=>{ vidOn=false; vid.style.display='none'; still.style.display=''; });
+  vid.load();
+}
+function playVid(){
+  vid.currentTime=0; const pr=vid.play(); if(pr&&pr.catch) pr.catch(()=>{});
+  lb.style.transition='none';
+  if(hasGsap&&!reduced){ gsap.fromTo(lb,{opacity:0,scale:.6},{opacity:1,scale:1,duration:.35,delay:.3,ease:'back.out(2.4)'}); gsap.to(lb,{opacity:0,scale:.6,duration:.3,delay:3.4}); }
+  vid.onended=()=>{ waving=false; };
+}
 function wave(){
   if(waving) return; waving=true;
+  if(vidOn){ playVid(); return; }
   if(!hasGsap||reduced){ lb.style.opacity=1; lb.style.transform='scale(1)'; setTimeout(()=>{lb.style.opacity=0;waving=false},1800); return; }
   const t=gsap.timeline({onComplete:()=>{waving=false}});
   t.to(lw,{scaleY:.92,scaleX:1.05,duration:.14,ease:'power2.in'})
