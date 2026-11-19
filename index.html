@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BitArt Core · Prototipo de la landing</title>
+<meta name="description" content="Prototipo animado de la landing de BitArt Core: software y apps a medida.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Inter:wght@400;500&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --marino:#031320; --violeta:#5428D6; --ambar:#F0A830; --coral:#EC6056; --lima:#E0FF2B; --papel:#F4F2EC;
+  --suave:#6E788A; --borde:#D6DBE4; --fondo:#EEF0F4; --gris:#B0B8C6; --blanco:#fff;
+  --f-tit:'Unbounded',system-ui,sans-serif; --f-ui:'Chakra Petch',system-ui,sans-serif; --f-txt:'Inter',system-ui,sans-serif;
+  --r:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{font-family:var(--f-txt);color:var(--marino);background:var(--blanco);line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:3px solid var(--violeta);outline-offset:3px}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+section{position:relative;overflow:hidden;padding:110px 0}
+h1,h2,h3{font-family:var(--f-tit);line-height:1.15;letter-spacing:-.01em}
+h2{font-size:clamp(26px,3.6vw,44px)}
+.sub{color:var(--suave);font-size:clamp(15px,1.6vw,18px);margin-top:8px}
+.eyebrow{font-family:var(--f-ui);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--violeta)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 28px;border-radius:999px;font-family:var(--f-ui);font-weight:600;font-size:16px;background:var(--violeta);color:#fff;border:3px solid var(--violeta);transition:transform .25s,box-shadow .25s,background .25s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(84,40,214,.6)}
+.btn.out{background:transparent;color:var(--violeta)}
+.btn.out:hover{background:var(--violeta);color:#fff}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;border:1.5px solid var(--gris);font-size:12px;color:var(--suave)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+/* esferas */
+.orb{position:absolute;border-radius:50%;opacity:.28;pointer-events:none;animation:float 14s ease-in-out infinite;will-change:transform}
+.orb.v{background:radial-gradient(circle,var(--violeta) 0%,transparent 68%)}.orb.a{background:radial-gradient(circle,var(--ambar) 0%,transparent 68%)}.orb.c{background:radial-gradient(circle,var(--coral) 0%,transparent 68%)}
+@keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-40px)}}
+/* cabecera */
+header{position:fixed;top:14px;left:14px;right:14px;z-index:60;max-width:1360px;margin:0 auto;height:62px;background:#fff;border:2px solid var(--borde);border-radius:999px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 20px;transition:box-shadow .3s}
+header.sc{box-shadow:0 12px 30px -16px rgba(3,19,32,.35)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-ui);font-weight:700;font-size:19px;white-space:nowrap}
+nav.main a,.hactions .btn{white-space:nowrap}
+.brand img{height:30px;width:auto}
+nav.main{display:none;gap:clamp(14px,2vw,30px);font-family:var(--f-ui);font-weight:600;font-size:15px}
+nav.main a{position:relative;padding:4px 0}
+nav.main a::after{content:"";position:absolute;left:0;bottom:-2px;height:2px;width:100%;background:var(--violeta);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+nav.main a:hover::after,nav.main a.act::after{transform:scaleX(1)}
+.hactions{display:none;gap:10px}
+.hactions .btn{height:42px;padding:0 20px;font-size:14px}
+.burger{width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+.burger i{display:block;width:22px;height:2.6px;background:var(--marino);border-radius:2px;margin:3px 0;transition:transform .3s,opacity .3s}
+.burger[aria-expanded=true] i:nth-child(1){transform:translateY(5.6px) rotate(45deg)}
+.burger[aria-expanded=true] i:nth-child(2){opacity:0}
+.burger[aria-expanded=true] i:nth-child(3){transform:translateY(-5.6px) rotate(-45deg)}
+@media(min-width:960px){nav.main{display:flex}.hactions{display:flex}.burger{display:none}}
+/* menú móvil */
+.menu{position:fixed;inset:0;z-index:55;background:var(--marino);color:#fff;padding:110px 30px 40px;transform:translateX(100%);transition:transform .5s cubic-bezier(.7,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.menu.open{transform:none}
+.menu .orb{opacity:.55}
+.menu a.l{font-family:var(--f-tit);font-weight:700;font-size:22px;padding:11px 0;opacity:0;transform:translateX(30px);transition:opacity .4s,transform .4s}
+.menu.open a.l{opacity:1;transform:none}
+.menu hr{border:0;border-top:2px solid #25394a;margin:20px 0}
+.menu .btn.out{color:#fff;border-color:#fff;width:100%}
+.menu small{color:var(--gris);display:block;text-align:center;margin-top:10px}
+/* hero */
+#inicio{min-height:100svh;display:flex;align-items:center;padding:120px 0 60px}
+.hero{display:grid;gap:10px;align-items:center;width:100%}
+.hero h1{font-size:clamp(44px,8.5vw,78px);margin:14px 0 18px}
+.hero h1 .w{display:inline-block;overflow:hidden;vertical-align:bottom}
+.hero h1 .w span{display:inline-block}
+.hero p.lead{color:var(--suave);font-size:clamp(16px,2vw,21px);max-width:520px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 18px}
+.hero .ok{color:var(--suave);font-size:14px;display:flex;gap:20px;flex-wrap:wrap}
+.hero-art{position:relative;display:grid;place-items:center;min-height:360px}
+.hero-art img.pose{width:min(78vw,340px);animation:bob 5s ease-in-out infinite;filter:drop-shadow(0 30px 30px rgba(3,19,32,.15))}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+model-viewer{width:100%;height:min(74vh,680px);--poster-color:transparent;background:transparent}
+.scroll-hint{position:absolute;left:24px;bottom:26px;font-family:var(--f-ui);font-size:13px;color:var(--suave);display:none}
+@media(min-width:960px){.hero{grid-template-columns:1.05fr .95fr}.scroll-hint{display:block}}
+/* proyectos */
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:34px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{height:42px;padding:0 20px;border-radius:999px;border:2px solid var(--violeta);color:var(--violeta);font-family:var(--f-ui);font-weight:600;font-size:14px;transition:background .25s,color .25s}
+.filters button.on,.filters button:hover{background:var(--violeta);color:#fff}
+.feat{display:grid;gap:26px;align-items:center;margin-bottom:46px}
+.feat .img,.pcard .img{position:relative;border-radius:20px;overflow:hidden;border:1.5px solid var(--borde);background:var(--fondo);cursor:pointer}
+.feat .img{aspect-ratio:16/10}
+.img img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.img:hover img{transform:scale(1.07)}
+.tag{position:absolute;top:14px;left:14px;background:var(--lima);color:var(--marino);font-family:var(--f-ui);font-weight:600;font-size:13px;padding:4px 14px;border-radius:99px}
+.feat h3{font-size:clamp(24px,3vw,32px);margin:6px 0 10px}
+.feat p{color:var(--suave);margin-bottom:14px}
+.feat .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.row-h{display:flex;justify-content:space-between;align-items:center;margin:8px 0 16px;font-family:var(--f-ui);font-weight:700;font-size:20px}
+.row-h a{font-size:15px;color:var(--violeta);font-weight:600}
+.car{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:24px;padding:4px 24px 18px;margin:0 -24px;cursor:grab;scrollbar-width:none}
+.car::-webkit-scrollbar{display:none}
+.car.drag{cursor:grabbing;scroll-snap-type:none}
+.pcard{flex:0 0 min(78vw,360px);scroll-snap-align:start}
+.pcard .img{aspect-ratio:16/9}
+.pcard h4{font-family:var(--f-ui);font-size:20px;margin-top:10px}
+.pcard span{color:var(--suave);font-size:14px}
+@media(min-width:960px){.feat{grid-template-columns:1.1fr .9fr;gap:50px}.pcard{flex-basis:calc(33.3% - 14px)}}
+/* ficha (modal) */
+.modal{position:fixed;inset:0;z-index:80;background:rgba(3,19,32,.6);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px}
+.modal.open{display:flex}
+.mpanel{background:#fff;border-radius:28px;max-width:1000px;width:100%;max-height:92vh;overflow:auto;padding:22px;display:grid;gap:24px;position:relative}
+.mpanel .x{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;background:#fff;border:2px solid var(--borde);font-size:22px;z-index:2}
+.mpanel .mimg{border-radius:18px;overflow:hidden;background:var(--fondo);aspect-ratio:16/10}
+.mpanel .mimg img{width:100%;height:100%;object-fit:cover}
+.mpanel h3{font-size:clamp(22px,3vw,32px);margin-bottom:14px}
+.data{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.data div{background:var(--fondo);border:1px solid var(--borde);border-radius:12px;padding:8px 12px}
+.data small{display:block;color:var(--suave);font-size:12px}
+.data b{font-family:var(--f-ui);font-size:16px}
+.mpanel h5{font-family:var(--f-ui);color:var(--violeta);font-size:13px;letter-spacing:.06em;margin:12px 0 2px}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.nums div{border:1.5px solid var(--gris);border-radius:12px;text-align:center;padding:12px 4px}
+.nums b{display:block;font-family:var(--f-tit);font-size:22px}
+.nums small{color:var(--suave);font-size:12px}
+@media(min-width:900px){.mpanel{grid-template-columns:1fr 1fr;padding:30px}}
+/* servicios */
+#servicios{background:linear-gradient(#fff,#faf9ff)}
+.svc{display:grid;gap:16px;margin-top:34px}
+.scard{border:2px solid var(--borde);border-radius:var(--r);padding:26px 24px;background:#fff;transform-style:preserve-3d;transition:box-shadow .3s,border-color .3s;display:flex;flex-direction:column;gap:12px;will-change:transform}
+.scard:hover{border-color:var(--violeta);box-shadow:0 24px 40px -22px rgba(84,40,214,.45)}
+.scard .n{font-family:var(--f-tit);font-size:28px;color:var(--violeta)}
+.scard h3{font-family:var(--f-ui);font-size:22px}
+.scard p{color:var(--suave);font-size:14px}
+.scard a{margin-top:auto;font-family:var(--f-ui);font-weight:600;color:var(--violeta)}
+.more{display:inline-block;margin-top:26px;font-family:var(--f-ui);font-weight:600;color:var(--violeta)}
+@media(min-width:700px){.svc{grid-template-columns:1fr 1fr}}
+@media(min-width:1100px){.svc{grid-template-columns:repeat(4,1fr)}}
+/* proceso */
+.steps{position:relative;display:grid;gap:34px;margin-top:50px}
+.line{position:absolute;background:var(--violeta);border-radius:3px;left:27px;top:28px;bottom:60px;width:4px;transform-origin:top;transform:scaleY(0)}
+.step{position:relative;display:grid;grid-template-columns:56px 1fr;gap:16px;opacity:.35;transition:opacity .5s}
+.step.on{opacity:1}
+.step .c{width:56px;height:56px;border-radius:50%;background:var(--violeta);color:#fff;display:grid;place-items:center;font-family:var(--f-ui);font-weight:700;font-size:20px;transition:transform .4s,box-shadow .4s;position:relative;z-index:1}
+.step.on .c{transform:scale(1.12);box-shadow:0 0 0 8px rgba(84,40,214,.15)}
+.step h3{font-family:var(--f-tit);font-size:22px;margin-bottom:2px}
+.step b{font-family:var(--f-ui);color:var(--violeta);font-size:14px}
+.step p{color:var(--suave);font-size:15px;margin-top:4px}
+.close{margin-top:50px;text-align:left}
+.close h3{font-size:clamp(20px,2.6vw,28px);margin-bottom:16px}
+@media(min-width:960px){
+  .steps{grid-template-columns:repeat(4,1fr);gap:24px}
+  .line{left:28px;right:28px;top:27px;bottom:auto;width:auto;height:4px;transform-origin:left;transform:scaleX(0)}
+  .step{grid-template-columns:1fr;gap:14px}
+}
+/* por qué */
+.why{display:grid;gap:40px;margin-top:10px}
+.reasons{list-style:none;display:grid;gap:18px;margin-top:26px}
+.reasons li{display:flex;gap:14px;align-items:center;font-family:var(--f-ui);font-weight:700;font-size:clamp(17px,2vw,21px)}
+.reasons svg{flex:none;width:32px;height:32px}
+.reasons circle{fill:var(--violeta)}
+.reasons path{fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;stroke-dashoffset:30}
+.reasons li.in path{stroke-dashoffset:0;transition:stroke-dashoffset .6s .2s}
+.about{background:var(--fondo);border:1.5px solid var(--borde);border-radius:28px;padding:30px}
+.about h3{font-size:26px;margin-bottom:12px}
+.about p{color:var(--suave);margin-bottom:18px}
+.about h6{font-family:var(--f-ui);font-size:13px;letter-spacing:.07em;color:var(--violeta);margin:14px 0 8px}
+.about .chip{animation:chipf 4s ease-in-out infinite}
+.about .chip:nth-child(2n){animation-delay:-1.3s}.about .chip:nth-child(3n){animation-delay:-2.4s}
+@keyframes chipf{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(min-width:960px){.why{grid-template-columns:1fr 520px;gap:70px;align-items:start}}
+/* planes */
+#planes{background:linear-gradient(#fff,#faf9ff)}
+.tabs{display:flex;gap:8px;justify-content:center;margin:26px 0 10px}
+.tabs button{height:42px;padding:0 20px;border-radius:999px;border:2px solid var(--violeta);color:var(--violeta);font-family:var(--f-ui);font-weight:600;font-size:14px}
+.tabs button.on{background:var(--violeta);color:#fff}
+.plans{display:grid;gap:22px;margin-top:30px}
+.plan{position:relative;border:2px solid var(--borde);border-radius:var(--r);padding:30px 26px;background:#fff;display:none;flex-direction:column;gap:14px}
+.plan.show{display:flex}
+.plan .k{font-family:var(--f-ui);font-weight:600;font-size:14px;color:var(--violeta)}
+.plan h3{font-family:var(--f-ui);font-size:24px}
+.price{font-family:var(--f-tit);font-size:clamp(24px,3vw,28px)}
+.price small{display:block;font-family:var(--f-txt);font-size:14px;font-weight:400;color:var(--suave);margin-top:2px}
+.plan ul{list-style:none;display:grid;gap:8px;font-size:15px}
+.plan li::before{content:"✓";margin-right:8px;color:var(--violeta);font-weight:700}
+.mens{background:var(--fondo);border:1px solid var(--borde);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--suave)}
+.mens b{display:block;color:var(--marino);font-family:var(--f-ui);font-size:14px}
+.plan .btn{margin-top:auto}
+.plan.pop{border:4px solid var(--violeta);animation:glow 3s ease-in-out infinite}
+.pop .badge{position:absolute;top:-17px;left:26px;background:var(--lima);font-family:var(--f-ui);font-weight:700;font-size:13px;padding:5px 16px;border-radius:99px}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(84,40,214,.25)}50%{box-shadow:0 0 0 12px rgba(84,40,214,0),0 24px 50px -20px rgba(84,40,214,.5)}}
+@media(min-width:960px){.tabs{display:none}.plans{grid-template-columns:repeat(3,1fr);align-items:stretch}.plan{display:flex}.plan.pop{transform:translateY(-10px)}}
+/* faq */
+.faq{display:grid;gap:40px}
+.qs{display:grid;gap:12px}
+.q{border:2px solid var(--borde);border-radius:16px;background:#fff;transition:border-color .3s}
+.q.open{border-color:var(--violeta)}
+.q button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 20px;text-align:left;font-family:var(--f-ui);font-weight:700;font-size:clamp(16px,1.8vw,20px)}
+.q i{flex:none;width:34px;height:34px;border-radius:50%;background:var(--violeta);position:relative;transition:transform .35s}
+.q i::before,.q i::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:3px;background:#fff;border-radius:2px;transform:translate(-50%,-50%)}
+.q i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .35s}
+.q.open i::after{transform:translate(-50%,-50%) rotate(0)}
+.ans{height:0;overflow:hidden}
+.ans p{padding:0 20px 20px;color:var(--suave)}
+@media(min-width:960px){.faq{grid-template-columns:400px 1fr;gap:80px}}
+/* contacto */
+.contact{display:grid;gap:40px;align-items:start}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.pills span{background:var(--fondo);border-radius:99px;padding:7px 16px;font-size:14px}
+.bubble{position:relative;background:var(--marino);color:#fff;border-radius:18px;padding:12px 16px;font-size:14px;max-width:260px;margin-top:20px;transition:opacity .3s}
+.bubble::after{content:"";position:absolute;bottom:-9px;left:30px;border:9px solid transparent;border-top-color:var(--marino);border-bottom:0}
+form{background:#fff;border:2px solid var(--borde);border-radius:28px;padding:28px;display:grid;gap:16px}
+.two{display:grid;gap:16px}
+label{font-family:var(--f-ui);font-weight:600;font-size:14px;display:grid;gap:6px}
+input,select,textarea{font:inherit;font-family:var(--f-txt);font-weight:400;height:52px;padding:0 16px;border:1.5px solid var(--gris);border-radius:14px;background:#fff;color:var(--marino);transition:border-color .25s,box-shadow .25s}
+textarea{height:110px;padding:14px 16px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--violeta);box-shadow:0 0 0 4px rgba(84,40,214,.15)}
+.fbtns{display:flex;gap:12px;flex-wrap:wrap}
+.note{font-size:13px;color:var(--suave)}
+@media(min-width:700px){.two{grid-template-columns:1fr 1fr}}
+@media(min-width:960px){.contact{grid-template-columns:.9fr 1.1fr;gap:80px}}
+footer{padding:34px 0 120px;font-size:14px;color:var(--suave);border-top:1px solid var(--borde)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between}
+/* Lumine guía y WhatsApp */
+#guide{position:fixed;right:6px;bottom:70px;width:70px;z-index:40;pointer-events:none;opacity:0;filter:drop-shadow(0 12px 14px rgba(3,19,32,.2))}
+.wa{position:fixed;z-index:45;left:10px;right:10px;bottom:10px;height:52px;border-radius:99px;background:var(--violeta);color:#fff;font-family:var(--f-ui);font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -10px rgba(84,40,214,.7);transform:translateY(130%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.wa.show{transform:none}
+@media(min-width:960px){#guide{width:112px;bottom:20px;right:14px}.wa{left:24px;right:auto;bottom:24px;width:260px}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:90}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header id="top">
+  <a class="brand" href="#inicio" aria-label="BitArt Core, inicio"><img src="assets/logo.png" alt="">BitArt Core</a>
+  <nav class="main" aria-label="Principal">
+    <a href="#proyectos">Proyectos</a><a href="#servicios">Servicios</a><a href="#proceso">Proceso</a><a href="#porque">Por qué BitArt</a><a href="#planes">Planes</a><a href="#preguntas">Preguntas</a>
+  </nav>
+  <div class="hactions"><a class="btn out" href="#" onclick="return false">Iniciar sesión</a><a class="btn" href="#contacto">Escríbenos</a></div>
+  <button class="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu"><span><i></i><i></i><i></i></span></button>
+</header>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <span class="orb v" style="width:300px;height:300px;right:-80px;top:120px"></span><span class="orb c" style="width:260px;height:260px;left:-90px;bottom:120px"></span>
+  <a class="l" href="#proyectos" style="transition-delay:.15s">Proyectos</a><a class="l" href="#servicios" style="transition-delay:.2s">Servicios</a><a class="l" href="#proceso" style="transition-delay:.25s">Proceso</a><a class="l" href="#porque" style="transition-delay:.3s">Por qué BitArt</a><a class="l" href="#planes" style="transition-delay:.35s">Planes</a><a class="l" href="#preguntas" style="transition-delay:.4s">Preguntas</a><a class="l" href="#contacto" style="transition-delay:.45s">Contacto</a>
+  <hr>
+  <a class="btn out" href="#" onclick="return false">Iniciar sesión</a>
+  <small>Portal de clientes y equipo</small>
+</div>
+
+<main>
+<!-- 1 ENTRADA -->
+<section id="inicio" data-pose="none">
+  <span class="orb v" style="width:520px;height:520px;right:-120px;top:-60px"></span>
+  <span class="orb a" style="width:420px;height:420px;left:-160px;bottom:-40px;animation-delay:-5s"></span>
+  <span class="orb c" style="width:360px;height:360px;right:10%;bottom:-120px;animation-delay:-9s"></span>
+  <div class="wrap hero">
+    <div>
+      <div class="eyebrow">Estudio de software · Medellín</div>
+      <h1 aria-label="Hola, soy Lumine."><span class="w"><span>Hola,</span></span> <span class="w"><span>soy</span></span><br><span class="w"><span>Lumine.</span></span></h1>
+      <p class="lead">Te acompañamos a crear el software y las apps a medida de tu empresa.</p>
+      <div class="cta"><a class="btn" href="#contacto">Cuéntanos tu idea</a><a class="btn out" href="#proyectos">Ver proyectos</a></div>
+      <div class="ok"><span>✓ Diagnóstico gratuito</span><span>✓ Sin compromiso</span></div>
+    </div>
+    <div class="hero-art" id="heroArt"><img class="pose" id="heroPose" src="assets/lumi_8_toca.png" alt="Lumine, la mascota de BitArt, señalando"></div>
+  </div>
+  <div class="scroll-hint">Desliza ↓</div>
+</section>
+
+<!-- 2 PROYECTOS -->
+<section id="proyectos" data-pose="lumi_4_presenta.png">
+  <span class="orb v" style="width:360px;height:360px;left:-140px;top:120px"></span><span class="orb a" style="width:340px;height:340px;right:-100px;bottom:80px"></span>
+  <div class="wrap">
+    <div class="head reveal"><div><h2>Proyectos</h2><p class="sub">Soluciones reales que generan impacto.</p></div>
+      <div class="filters" role="group" aria-label="Filtrar proyectos"><button class="on" data-f="all">Todos</button><button data-f="web">Web</button><button data-f="app">Apps</button><button data-f="3d">3D</button></div></div>
+    <div class="feat reveal" id="feat" data-cat="3d">
+      <div class="img" data-p="sim" tabindex="0" role="button" aria-label="Ver la ficha del Simulador de Riesgos 3D"><img src="assets/emergency3d.png" alt="Emergency3D, plan de emergencia en el trabajo"><span class="tag">Destacado</span></div>
+      <div><span class="eyebrow">Capacitación SST</span><h3>Simulador de Riesgos 3D</h3><p>Entrenamiento inmersivo en prevención de riesgos laborales con escenarios 3D.</p><div class="chips"><span class="chip">Unity</span><span class="chip">C#</span><span class="chip">WebGL</span><span class="chip">Firebase</span></div>
+        <div class="cta"><button class="btn" data-p="sim">Ver proyecto</button><button class="btn out" data-p="sim">Ver video</button></div></div>
+    </div>
+    <div class="row-h reveal"><span>Más proyectos</span><a href="#proyectos">Ver todos →</a></div>
+    <div class="car reveal" id="car">
+      <article class="pcard" data-cat="app"><div class="img" data-p="mami" tabindex="0" role="button" aria-label="Ver la ficha de Mami Paisa"><img src="assets/mamipaisa.png" alt="Mami Paisa" draggable="false"></div><h4>Mami Paisa</h4><span>App</span></article>
+      <article class="pcard" data-cat="web"><div class="img" data-p="edu" tabindex="0" role="button" aria-label="Ver la ficha de Plataforma Educativa"><img src="assets/ecommerce.png" alt="Plataforma Educativa" draggable="false"></div><h4>Plataforma Educativa</h4><span>Web</span></article>
+      <article class="pcard" data-cat="app"><div class="img" data-p="del" tabindex="0" role="button" aria-label="Ver la ficha de App de Delivery"><img src="assets/finanzas.png" alt="App de Delivery" draggable="false"></div><h4>App de Delivery</h4><span>App móvil</span></article>
+      <article class="pcard" data-cat="3d"><div class="img" data-p="bio" tabindex="0" role="button" aria-label="Ver la ficha de BioExplorer 3D"><img src="assets/bioexplorer.png" alt="BioExplorer 3D" draggable="false"></div><h4>BioExplorer 3D</h4><span>Experiencia 3D</span></article>
+    </div>
+  </div>
+</section>
+
+<!-- 4 SERVICIOS -->
+<section id="servicios" data-pose="lumi_2_senala.png">
+  <span class="orb c" style="width:360px;height:360px;right:-100px;top:60px"></span>
+  <div class="wrap">
+    <div class="reveal"><h2>Nuestras especialidades</h2><p class="sub">Productos digitales preparados para crecer.</p></div>
+    <div class="svc" id="svc">
+      <article class="scard"><span class="n">01</span><h3>Diseño UI/UX</h3><p>Productos digitales claros, atractivos e intuitivos.</p><div class="chips"><span class="chip">Sistemas de diseño</span><span class="chip">Prototipos</span><span class="chip">SaaS</span></div><a href="#proyectos">Ver proyectos →</a></article>
+      <article class="scard"><span class="n">02</span><h3>Desarrollo Web</h3><p>Plataformas robustas, rápidas y escalables.</p><div class="chips"><span class="chip">SaaS</span><span class="chip">Portales B2B y CRM</span><span class="chip">E-commerce</span></div><a href="#proyectos">Ver proyectos →</a></article>
+      <article class="scard"><span class="n">03</span><h3>Apps Móviles</h3><p>Aplicaciones multiplataforma de alto rendimiento.</p><div class="chips"><span class="chip">.NET MAUI</span><span class="chip">Empresariales</span><span class="chip">Offline-first</span></div><a href="#proyectos">Ver proyectos →</a></article>
+      <article class="scard"><span class="n">04</span><h3>Experiencias 3D</h3><p>Simuladores y experiencias inmersivas.</p><div class="chips"><span class="chip">Simulación</span><span class="chip">Web 3D</span><span class="chip">Gamificación</span></div><a href="#proyectos">Ver proyectos →</a></article>
+    </div>
+    <a class="more reveal" href="#contacto">¿No sabes cuál necesitas? Cuéntanos tu idea →</a>
+  </div>
+</section>
+
+<!-- 5 PROCESO -->
+<section id="proceso" data-pose="lumi_3_lupa.png">
+  <span class="orb a" style="width:380px;height:380px;right:-120px;top:40px"></span>
+  <div class="wrap">
+    <div class="reveal"><h2>Nuestro proceso</h2><p class="sub">De la idea al lanzamiento, contigo en cada etapa.</p></div>
+    <div class="steps" id="steps">
+      <div class="line" id="line"></div>
+      <div class="step"><div class="c">1</div><div><h3>Escuchamos</h3><b>Diagnóstico y estrategia</b><p>Entendemos tu idea y tus usuarios para definir el alcance correcto.</p></div></div>
+      <div class="step"><div class="c">2</div><div><h3>Diseñamos</h3><b>Prototipado UX/UI</b><p>Flujos e interfaces que validas antes de desarrollar.</p></div></div>
+      <div class="step"><div class="c">3</div><div><h3>Desarrollamos</h3><b>Ingeniería de software</b><p>Entregas iterativas con control de calidad.</p></div></div>
+      <div class="step"><div class="c">4</div><div><h3>Lanzamos</h3><b>Despliegue y evolución</b><p>Publicamos, medimos y mejoramos de forma continua.</p></div></div>
+    </div>
+    <div class="close reveal"><h3>Tu producto está listo para crecer.</h3><a class="btn" href="#contacto">Empieza tu proyecto</a></div>
+  </div>
+</section>
+
+<!-- 6 POR QUÉ -->
+<section id="porque" data-pose="lumi_6_gafas.png">
+  <span class="orb v" style="width:380px;height:380px;left:-140px;top:100px"></span><span class="orb a" style="width:340px;height:340px;right:-80px;bottom:40px"></span>
+  <div class="wrap why">
+    <div><div class="reveal"><h2>¿Por qué elegir BitArt?</h2><p class="sub">Cinco razones para confiar en nosotros.</p></div>
+      <ul class="reasons" id="reasons">
+        <li><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16"/><path d="M9 16.5l5 5 9-11"/></svg>Arquitectura moderna y escalable (.NET / Cloud)</li>
+        <li><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16"/><path d="M9 16.5l5 5 9-11"/></svg>100 % desarrollo propio, sin plantillas prefabricadas</li>
+        <li><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16"/><path d="M9 16.5l5 5 9-11"/></svg>Entregas ágiles y transparentes</li>
+        <li><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16"/><path d="M9 16.5l5 5 9-11"/></svg>UX/UI de categoría premium</li>
+        <li><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16"/><path d="M9 16.5l5 5 9-11"/></svg>Acompañamiento técnico constante</li>
+      </ul></div>
+    <div class="about reveal"><h3>Quiénes somos</h3><p>Creíamos que el software podía ser tan bello como funcional. Unimos desarrollo de alto rendimiento con diseño de vanguardia para crear ecosistemas digitales que marcan la diferencia.</p>
+      <h6>NUESTROS PRINCIPIOS</h6><div class="chips"><span class="chip">Innovación</span><span class="chip">Diseño</span><span class="chip">Excelencia</span><span class="chip">Colaboración</span></div>
+      <h6>TECNOLOGÍAS</h6><div class="chips"><span class="chip">Unity</span><span class="chip">.NET</span><span class="chip">Azure</span><span class="chip">AWS</span><span class="chip">Blazor</span><span class="chip">Three.js</span></div></div>
+  </div>
+</section>
+
+<!-- 7 PLANES -->
+<section id="planes" data-pose="lumi_4_presenta.png">
+  <span class="orb c" style="width:380px;height:380px;right:-120px;top:40px"></span>
+  <div class="wrap">
+    <div class="reveal" style="text-align:left"><h2>Caminos para comenzar</h2><p class="sub">Elige la mejor forma de empezar. Todos los precios en pesos colombianos.</p></div>
+    <div class="tabs" id="tabs" role="tablist"><button class="" data-t="0">Landing</button><button class="on" data-t="1">Portales</button><button data-t="2">A medida</button></div>
+    <div class="plans" id="plans">
+      <article class="plan"><span class="k">START</span><h3>Landing Page Premium</h3><div class="price"><span data-n="800000">Desde $800.000</span><small>COP + $90.000 al mes</small></div>
+        <ul><li>Diseño UI/UX de alta conversión</li><li>Integración con WhatsApp o CRM</li><li>Velocidad optimizada (Core Web Vitals)</li></ul>
+        <div class="mens"><b>La mensualidad incluye</b>Alojamiento rápido, certificado SSL y 1 hora de soporte para cambios menores.</div><a class="btn out" href="#contacto">Iniciar proyecto</a></article>
+      <article class="plan pop show"><span class="badge">MÁS POPULAR</span><span class="k">GROW</span><h3>Portales Empresariales</h3><div class="price"><span data-n="2500000">Desde $2.500.000</span><small>COP + $250.000 al mes</small></div>
+        <ul><li>Panel de administración y roles</li><li>Catálogo de ventas o CRM base</li><li>Pasarelas de pago</li><li>Infraestructura escalable</li></ul>
+        <div class="mens"><b>La mensualidad incluye</b>Servidor cloud, copias de seguridad diarias y soporte garantizado ante caídas (SLA).</div><a class="btn" href="#contacto">Cotizar plataforma</a></article>
+      <article class="plan"><span class="k">ENTERPRISE</span><h3>Software a Medida</h3><div class="price"><span data-n="0">Consultar</span><small>Cotización según tu proyecto</small></div>
+        <ul><li>Arquitectura multi-tenant y cloud (Azure/AWS)</li><li>Web y móvil, IA, 3D y gamificación</li><li>Seguridad y bases de datos (.NET)</li></ul>
+        <div class="mens"><b>La mensualidad incluye</b>Arquitectura cloud empresarial, soporte de máxima prioridad y bolsa de horas para desarrollo.</div><a class="btn out" href="#contacto">Agendar consultoría</a></article>
+    </div>
+  </div>
+</section>
+
+<!-- 8 FAQ -->
+<section id="preguntas" data-pose="lumi_7_pulgar.png">
+  <span class="orb v" style="width:380px;height:380px;right:-120px;top:60px"></span>
+  <div class="wrap faq">
+    <div class="reveal"><h2>Todo lo que necesitas saber</h2><p class="sub">Respondemos las dudas más comunes antes de empezar.</p><p style="margin-top:24px"><a class="btn out" href="#contacto">Agenda una reunión gratuita</a></p></div>
+    <div class="qs" id="qs">
+      <div class="q open"><button aria-expanded="true">¿Qué incluye la mensualidad?<i></i></button><div class="ans"><p>Alojamiento, certificado de seguridad y soporte. No incluye funciones nuevas.</p></div></div>
+      <div class="q"><button aria-expanded="false">¿El precio es fijo?<i></i></button><div class="ans"><p>El precio «desde» se mantiene si usas la plantilla de BitArt. Si pides integraciones o cambios fuera de ella, se suman horas de desarrollo.</p></div></div>
+      <div class="q"><button aria-expanded="false">¿Cuánto tarda mi proyecto?<i></i></button><div class="ans"><p>Respuesta de ejemplo: el plazo depende del tipo de proyecto. Aquí va el tiempo estimado.</p></div></div>
+      <div class="q"><button aria-expanded="false">¿Cómo empezamos?<i></i></button><div class="ans"><p>Respuesta de ejemplo: nos cuentas tu idea, agendamos una reunión gratuita y te enviamos una propuesta.</p></div></div>
+      <div class="q"><button aria-expanded="false">¿De quién es el código?<i></i></button><div class="ans"><p>Respuesta de ejemplo: la propiedad del código se define en el contrato según el proyecto.</p></div></div>
+      <div class="q"><button aria-expanded="false">¿Trabajan con empresas de otras ciudades?<i></i></button><div class="ans"><p>Respuesta de ejemplo: sí, trabajamos con cualquier empresa que quiera desarrollar una herramienta digital.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 CONTACTO -->
+<section id="contacto" data-pose="lumi_5_celebra.png">
+  <span class="orb a" style="width:380px;height:380px;left:-140px;bottom:40px"></span><span class="orb v" style="width:360px;height:360px;right:-100px;top:40px"></span>
+  <div class="wrap contact">
+    <div class="reveal"><h2>Solicita una consultoría</h2><p class="sub">Cuéntanos tu idea y te respondemos en menos de 24 horas hábiles.</p>
+      <div class="pills"><span>✓ Diagnóstico gratuito</span><span>✓ Sin compromiso</span></div><p class="note">Arquitectura tecnológica inicial incluida.</p>
+      <div class="bubble" id="bubble">Hola, cuéntame tu idea. Yo te escucho.</div></div>
+    <form id="form" class="reveal" novalidate>
+      <div class="two"><label>Nombre completo<input name="n" placeholder="Tu nombre" autocomplete="name"></label><label>Correo corporativo<input name="e" type="email" placeholder="nombre@empresa.com" autocomplete="email"></label></div>
+      <div class="two"><label>Empresa (opcional)<input name="c" placeholder="Nombre de tu empresa" autocomplete="organization"></label><label>Tipo de solución<select name="t"><option value="">Selecciona una opción</option><option>Landing Page Premium</option><option>Portal Empresarial o e-commerce</option><option>Software a Medida o SaaS</option><option>Otras soluciones: móvil, IA, 3D</option></select></label></div>
+      <label>Cuéntanos tu idea<textarea name="i" placeholder="¿Qué quieres construir?"></textarea></label>
+      <div class="fbtns"><button class="btn" type="submit">Enviar solicitud</button><a class="btn out" href="https://wa.me/573107435474" target="_blank" rel="noopener">Escribir por WhatsApp</a></div>
+      <p class="note" id="fmsg" role="status">Prototipo: el formulario todavía no envía nada.</p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>BitArt Core · Medellín · 310 743 5474</span><span>Instagram @bitart_core · LinkedIn · GitHub · WhatsApp</span><span>© 2026 BitArt Core</span></div></footer>
+
+<img id="guide" src="assets/lumi_4_presenta.png" alt="" aria-hidden="true">
+<a class="wa" id="wa" href="https://wa.me/573107435474" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Ficha del proyecto">
+  <div class="mpanel"><button class="x" aria-label="Cerrar">×</button><div class="mimg"><img id="mImg" src="" alt=""></div>
+    <div><h3 id="mT"></h3><div class="data"><div><small>Cliente</small><b id="mC"></b></div><div><small>Año</small><b id="mA"></b></div><div><small>Duración</small><b id="mD"></b></div></div>
+      <h5>DESAFÍO</h5><p id="mDes"></p><h5>SOLUCIÓN</h5><p id="mSol"></p><div class="chips" id="mCh" style="margin-top:12px"></div>
+      <div class="nums" id="mN"></div><a class="btn" href="#contacto" id="mCta">Quiero un proyecto así</a></div></div>
+</div>
+<canvas id="fx"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+<script>
+(function(){
+const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wide=()=>innerWidth>=960;
+const hasGsap=typeof gsap!=='undefined';
+if(hasGsap){ gsap.registerPlugin(ScrollTrigger); ScrollTrigger.config({ignoreMobileResize:true});
+  const rf=()=>ScrollTrigger.refresh(); addEventListener('load',()=>{rf();setTimeout(rf,600)}); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(rf); }
+
+/* cabecera */
+const header=$('#top');
+addEventListener('scroll',()=>header.classList.toggle('sc',scrollY>20),{passive:true});
+/* menú móvil */
+const burger=$('.burger'), menu=$('#menu');
+function setMenu(o){menu.classList.toggle('open',o);burger.setAttribute('aria-expanded',o);burger.setAttribute('aria-label',o?'Cerrar menú':'Abrir menú');menu.setAttribute('aria-hidden',!o);document.body.style.overflow=o?'hidden':''}
+burger.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
+$$('#menu a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+addEventListener('keydown',e=>{if(e.key==='Escape'){setMenu(false);closeModal()}});
+
+/* entrada: robot 3D en pantalla grande, imagen en celular */
+const art=$('#heroArt');
+let mv=null;
+function mountRobot(){
+  if(!wide()||reduced||mv||!customElements.get||!window.customElements) return;
+  mv=document.createElement('model-viewer');
+  mv.setAttribute('src','assets/BitArt_Robot_Web.glb');
+  mv.setAttribute('alt','Lumine en 3D, mira hacia donde mueves el cursor');
+  mv.setAttribute('camera-orbit','0deg 78deg 110%');
+  mv.setAttribute('field-of-view','28deg');
+  mv.setAttribute('interaction-prompt','none');
+  mv.setAttribute('disable-zoom','');
+  mv.setAttribute('shadow-intensity','0.6');
+  mv.setAttribute('exposure','1.1');
+  mv.setAttribute('loading','eager');
+  mv.addEventListener('load',()=>{ $('#heroPose').style.display='none'; });
+  mv.addEventListener('error',()=>{ mv.remove(); mv=null; $('#heroPose').style.display=''; });
+  art.appendChild(mv);
+  let tx=0,ty=0,cx=0,cy=0;
+  addEventListener('pointermove',e=>{ tx=(e.clientX/innerWidth-.5)*2; ty=(e.clientY/innerHeight-.5)*2; },{passive:true});
+  (function tick(){ cx+=(tx-cx)*.07; cy+=(ty-cy)*.07; if(mv) mv.setAttribute('camera-orbit',`${(cx*38).toFixed(1)}deg ${(78+cy*9).toFixed(1)}deg 110%`); requestAnimationFrame(tick); })();
+}
+mountRobot();
+addEventListener('resize',()=>{ if(wide()) mountRobot(); else if(mv){ mv.remove(); mv=null; $('#heroPose').style.display=''; } });
+
+/* animaciones con GSAP */
+if(hasGsap && !reduced){
+  const tl=gsap.timeline({delay:.15});
+  tl.from('.hero h1 .w span',{yPercent:110,duration:.9,ease:'power4.out',stagger:.12})
+    .from('.eyebrow',{opacity:0,y:14,duration:.6},'<')
+    .from('.hero .lead,.hero .cta,.hero .ok',{opacity:0,y:24,duration:.7,stagger:.12,ease:'power3.out'},'-=.5')
+    .from('#heroPose',{yPercent:60,opacity:0,scale:.85,duration:1.1,ease:'back.out(1.5)'},'-=1.2');
+  $$('.reveal').forEach(el=>gsap.from(el,{y:44,opacity:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%',once:true}}));
+  /* servicios: abanico */
+  const sc=$$('#svc .scard');
+  gsap.from(sc,{y:90,opacity:0,rotation:(i)=>(i-1.5)*7,transformOrigin:'50% 120%',duration:1,ease:'power3.out',stagger:.12,scrollTrigger:{trigger:'#svc',start:'top 85%',once:true}});
+  /* proceso: línea con scroll */
+  const line=$('#line'), steps=$$('#steps .step');
+  const horiz=()=>wide();
+  ScrollTrigger.create({trigger:'#steps',start:'top 70%',end:'bottom 60%',scrub:.4,onUpdate:self=>{
+    const p=self.progress; line.style[horiz()?'transform':'transform']=horiz()?`scaleX(${p})`:`scaleY(${p})`;
+    steps.forEach((s,i)=>s.classList.toggle('on',p>=i/(steps.length)-.02+ (horiz()?0:0) && p>(i===0?0:i/steps.length-.05)));
+  }});
+  /* por qué: checks uno a uno */
+  ScrollTrigger.create({trigger:'#reasons',start:'top 80%',once:true,onEnter:()=>$$('#reasons li').forEach((li,i)=>setTimeout(()=>li.classList.add('in'),i*220))});
+} else {
+  $$('#steps .step').forEach(s=>s.classList.add('on'));
+  $$('#reasons li').forEach(l=>l.classList.add('in'));
+  $('#line').style.transform=wide()?'scaleX(1)':'scaleY(1)';
+}
+
+/* inclinación 3D en tarjetas de servicios */
+if(!reduced) $$('.scard').forEach(c=>{
+  c.addEventListener('pointermove',e=>{ if(e.pointerType==='touch')return; const r=c.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5; c.style.transform=`perspective(800px) rotateY(${x*12}deg) rotateX(${-y*12}deg) translateY(-6px)`; });
+  c.addEventListener('pointerleave',()=>{c.style.transform='';});
+});
+
+/* Lumine guía: cambia de pose por sección */
+const guide=$('#guide'), wa=$('#wa');
+let cur='';
+function setPose(src){
+  if(src===cur) return; cur=src;
+  if(!hasGsap||reduced){ if(src==='none'){guide.style.opacity=0}else{guide.src='assets/'+src;guide.style.opacity=1} return; }
+  gsap.to(guide,{opacity:0,scale:.7,y:30,duration:.25,onComplete:()=>{
+    if(src==='none') return;
+    guide.src='assets/'+src;
+    gsap.fromTo(guide,{opacity:0,scale:.7,y:40},{opacity:1,scale:1,y:0,duration:.6,ease:'back.out(2)'});
+  }});
+}
+const secs=$$('section[data-pose]');
+const links=$$('nav.main a');
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){
+    const p=e.target.dataset.pose;
+    setPose(p==='none'?'none':(p==='none'?'none':p));
+    links.forEach(a=>a.classList.toggle('act',a.getAttribute('href')==='#'+e.target.id));
+    wa.classList.toggle('show',e.target.id!=='inicio'&&e.target.id!=='contacto');
+  }});
+},{threshold:.4});
+secs.forEach(s=>io.observe(s));
+/* en celular la entrada ya muestra a Lumine grande */
+
+/* proyectos: datos y ficha */
+const P={
+ sim:{t:'Simulador de Riesgos 3D',img:'emergency3d.png',c:'FVL',a:'2025',d:'3 meses',des:'Capacitar a los trabajadores en situaciones de riesgo sin exponerlos a peligros reales.',sol:'Experiencia 3D con simulaciones de incendios, sismos y emergencias, construida en Unity.',ch:['Unity','C#','WebGL','Firebase','Blender'],n:[[350,'+','usuarios'],[12,'','escenarios 3D'],[98,' %','satisfacción']]},
+ mami:{t:'Mami Paisa',img:'mamipaisa.png',c:'Mami Paisa',a:'2026',d:'60 días',des:'Respuesta de ejemplo: ordenar los pedidos y los puntos de las usuarias en una sola app.',sol:'Respuesta de ejemplo: app con tres roles y 23 pantallas, de pedido a seguimiento.',ch:['App móvil','Diseño UX/UI','.NET'],n:[[3,'','roles'],[23,'','pantallas'],[60,'','días']]},
+ edu:{t:'Plataforma Educativa',img:'ecommerce.png',c:'Por confirmar',a:'—',d:'—',des:'Respuesta de ejemplo: describe aquí el desafío del cliente.',sol:'Respuesta de ejemplo: describe aquí la solución.',ch:['Web'],n:[[0,'','dato'],[0,'','dato'],[0,'','dato']]},
+ del:{t:'App de Delivery',img:'finanzas.png',c:'Por confirmar',a:'—',d:'—',des:'Respuesta de ejemplo: describe aquí el desafío del cliente.',sol:'Respuesta de ejemplo: describe aquí la solución.',ch:['App móvil'],n:[[0,'','dato'],[0,'','dato'],[0,'','dato']]},
+ bio:{t:'BioExplorer 3D',img:'bioexplorer.png',c:'Por confirmar',a:'—',d:'—',des:'Respuesta de ejemplo: describe aquí el desafío del cliente.',sol:'Respuesta de ejemplo: describe aquí la solución.',ch:['Three.js','WebGL'],n:[[0,'','dato'],[0,'','dato'],[0,'','dato']]}
+};
+const modal=$('#modal'); let lastFocus=null;
+function count(el,to,suf){ if(!hasGsap||reduced){el.textContent=to+suf;return} const o={v:0}; gsap.to(o,{v:to,duration:1.4,ease:'power2.out',onUpdate:()=>el.textContent=Math.round(o.v)+suf}); }
+function openModal(k,from){
+  const p=P[k]; if(!p) return; lastFocus=document.activeElement;
+  $('#mImg').src='assets/'+p.img; $('#mImg').alt=p.t; $('#mT').textContent=p.t; $('#mC').textContent=p.c; $('#mA').textContent=p.a; $('#mD').textContent=p.d; $('#mDes').textContent=p.des; $('#mSol').textContent=p.sol;
+  $('#mCh').innerHTML=p.ch.map(x=>`<span class="chip">${x}</span>`).join('');
+  $('#mN').innerHTML=p.n.map(n=>`<div><b>0</b><small>${n[2]}</small></div>`).join('');
+  modal.classList.add('open'); document.body.style.overflow='hidden';
+  const panel=$('.mpanel',modal);
+  if(hasGsap&&!reduced){ gsap.fromTo(panel,{scale:.88,y:40,opacity:0},{scale:1,y:0,opacity:1,duration:.5,ease:'power3.out'}); gsap.fromTo('#mImg',{scale:1.2},{scale:1,duration:1,ease:'power2.out'}); }
+  $$('#mN b').forEach((b,i)=>count(b,p.n[i][0],p.n[i][1]));
+  $('.x',modal).focus();
+}
+function closeModal(){ if(!modal.classList.contains('open')) return; modal.classList.remove('open'); document.body.style.overflow=''; if(lastFocus) lastFocus.focus(); }
+$$('[data-p]').forEach(el=>{ el.addEventListener('click',e=>{ if(car.moved) {e.preventDefault();return} openModal(el.dataset.p); }); el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();openModal(el.dataset.p)} }); });
+$('.x',modal).addEventListener('click',closeModal);
+modal.addEventListener('click',e=>{ if(e.target===modal) closeModal(); });
+$('#mCta').addEventListener('click',closeModal);
+
+/* carrusel con arrastre */
+const car=$('#car'); let down=false,sx=0,sl=0; car.moved=false;
+car.addEventListener('pointerdown',e=>{ if(e.pointerType==='touch')return; down=true; car.moved=false; sx=e.clientX; sl=car.scrollLeft; });
+addEventListener('pointermove',e=>{ if(!down)return; const dx=e.clientX-sx; if(Math.abs(dx)>5){car.classList.add('drag');car.moved=true} car.scrollLeft=sl-dx; });
+addEventListener('pointerup',()=>{ if(!down)return; down=false; car.classList.remove('drag'); setTimeout(()=>car.moved=false,50); });
+
+/* filtros */
+$$('.filters button').forEach(b=>b.addEventListener('click',()=>{
+  $$('.filters button').forEach(x=>x.classList.toggle('on',x===b)); const f=b.dataset.f;
+  const items=[$('#feat'),...$$('.pcard')];
+  items.forEach(el=>{ const show=f==='all'||el.dataset.cat===f; if(hasGsap&&!reduced){ if(show){ el.style.display=''; gsap.fromTo(el,{opacity:0,y:20},{opacity:1,y:0,duration:.5}); } else gsap.to(el,{opacity:0,duration:.25,onComplete:()=>el.style.display='none'}); } else el.style.display=show?'':'none'; });
+}));
+
+/* planes: pestañas en celular */
+const plans=$$('#plans .plan'), tabs=$$('#tabs button');
+function fmt(n){return n?('Desde $'+n.toLocaleString('es-CO')):'Consultar'}
+function showPlan(i){
+  tabs.forEach((t,k)=>t.classList.toggle('on',k===i)); plans.forEach((p,k)=>p.classList.toggle('show',k===i));
+  const el=$('[data-n]',plans[i]); const n=+el.dataset.n;
+  if(hasGsap&&!reduced){ gsap.fromTo(plans[i],{opacity:0,y:20},{opacity:1,y:0,duration:.45}); if(n){ const o={v:0}; gsap.to(o,{v:n,duration:.9,ease:'power2.out',onUpdate:()=>el.textContent=fmt(Math.round(o.v/1000)*1000)}); } }
+}
+tabs.forEach((t,i)=>t.addEventListener('click',()=>showPlan(i)));
+
+/* preguntas: acordeón con altura animada */
+const qs=$$('#qs .q');
+function setQ(q,open){
+  const a=$('.ans',q); q.classList.toggle('open',open); $('button',q).setAttribute('aria-expanded',open);
+  if(hasGsap&&!reduced) gsap.to(a,{height:open?'auto':0,duration:.45,ease:'power2.inOut'}); else a.style.height=open?'auto':'0';
+}
+qs.forEach(q=>{ const a=$('.ans',q); a.style.height=q.classList.contains('open')?'auto':'0'; $('button',q).addEventListener('click',()=>{ const o=!q.classList.contains('open'); qs.forEach(x=>{ if(x!==q) setQ(x,false)}); setQ(q,o); }); });
+
+/* contacto: Lumine reacciona a cada campo */
+const bubble=$('#bubble');
+const msgs={n:'¡Mucho gusto! ¿Cómo te llamas?',e:'Con tu correo te respondemos en menos de 24 horas.',c:'Si tienes empresa, cuéntame cuál. Es opcional.',t:'Elige lo que más se parezca a lo que necesitas.',i:'Cuéntame sin miedo: entre más detalle, mejor la propuesta.'};
+$$('#form [name]').forEach(f=>f.addEventListener('focus',()=>{ bubble.textContent=msgs[f.name]; if(hasGsap&&!reduced) gsap.fromTo(bubble,{scale:.9,opacity:.4},{scale:1,opacity:1,duration:.35,ease:'back.out(2)',transformOrigin:'30px 100%'}); }));
+/* envío: lluvia de esferas (no envía datos) */
+const cv=$('#fx'), cx=cv.getContext('2d');
+function fit(){cv.width=innerWidth;cv.height=innerHeight} fit(); addEventListener('resize',fit);
+function confetti(x,y){
+  const cols=['#5428D6','#F0A830','#EC6056','#E0FF2B','#031320']; const ps=Array.from({length:70},()=>({x,y,vx:(Math.random()-.5)*12,vy:-Math.random()*13-3,r:5+Math.random()*9,c:cols[Math.random()*5|0],l:1}));
+  (function step(){ cx.clearRect(0,0,cv.width,cv.height); let alive=false; ps.forEach(p=>{ p.vy+=.35; p.x+=p.vx; p.y+=p.vy; p.l-=.012; if(p.l>0){alive=true; cx.globalAlpha=Math.max(p.l,0); cx.fillStyle=p.c; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,7); cx.fill();} }); cx.globalAlpha=1; if(alive) requestAnimationFrame(step); else cx.clearRect(0,0,cv.width,cv.height); })();
+}
+$('#form').addEventListener('submit',e=>{
+  e.preventDefault(); const f=e.target; const ok=f.n.value.trim()&&/.+@.+\..+/.test(f.e.value);
+  const m=$('#fmsg');
+  if(!ok){ m.textContent='Falta tu nombre y un correo válido.'; m.style.color='var(--coral)'; return; }
+  m.style.color='var(--violeta)'; m.textContent='¡Listo! En el prototipo no se envía, pero así se vería el agradecimiento.'; bubble.textContent='¡Gracias, '+f.n.value.split(' ')[0]+'! Te escribimos pronto.';
+  if(!reduced){ const r=e.submitter.getBoundingClientRect(); confetti(r.left+r.width/2,r.top); }
+});
+})();
+</script>
+</body>
+</html>
