@@ -76,10 +76,12 @@ nav.main a:hover::after,nav.main a.act::after{transform:scaleX(1)}
 .hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 18px}
 .hero .ok{color:var(--suave);font-size:14px;display:flex;gap:20px;flex-wrap:wrap}
 .hero-art{position:relative;display:grid;place-items:center;min-height:360px;padding-bottom:34px}
-.hero-art::after{content:"";position:absolute;left:50%;bottom:8px;width:62%;height:46px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(3,19,32,.22) 0%,rgba(3,19,32,0) 70%);z-index:0}
+.lumi-wrap::after{content:"";position:absolute;left:50%;bottom:-6px;width:58%;height:34px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(3,19,32,.2) 0%,rgba(3,19,32,0) 70%);z-index:0;pointer-events:none}
+.lumi-wrap.vid::after{display:none}
 .lumi-wrap{position:relative;z-index:1;display:grid;place-items:center;cursor:pointer;transform-origin:50% 95%;-webkit-tap-highlight-color:transparent;outline-offset:8px}
-.lumi-hi{position:absolute;top:2%;left:-4%;z-index:3;background:#fff;color:var(--navy,#031320);font-family:var(--f-ui);font-weight:700;font-size:14px;padding:9px 14px;border-radius:16px 16px 16px 4px;box-shadow:0 8px 22px rgba(3,19,32,.18);opacity:0;transform:scale(.6);transform-origin:0 100%;pointer-events:none;white-space:nowrap}
-@media(min-width:960px){.lumi-hi{font-size:16px;left:0}}
+.lumi-hi{position:absolute;top:6%;left:-2%;z-index:3;display:inline-flex;align-items:center;gap:9px;background:var(--marino,#031320);color:#fff;font-family:var(--f-ui);font-weight:600;font-size:13px;letter-spacing:.02em;padding:10px 16px 10px 12px;border-radius:999px;box-shadow:0 10px 26px rgba(84,40,214,.28);opacity:0;transform:scale(.6);transform-origin:0 100%;pointer-events:none;white-space:nowrap}
+.lumi-hi::before{content:"";width:9px;height:9px;border-radius:50%;background:#E0FF2B;box-shadow:0 0 0 4px rgba(224,255,43,.25)}
+@media(min-width:960px){.lumi-hi{font-size:15px;left:0}}
 .hero-art img.pose{position:relative;z-index:1;width:min(78vw,340px);animation:bob 5s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 .scroll-hint{position:absolute;left:24px;bottom:26px;font-family:var(--f-ui);font-size:13px;color:var(--suave);display:none}
@@ -263,7 +265,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
       <div class="cta"><a class="btn" href="#contacto">Cuéntanos tu idea</a><a class="btn out" href="#proyectos">Ver proyectos</a></div>
       <div class="ok"><span>✓ Diagnóstico gratuito</span><span>✓ Sin compromiso</span></div>
     </div>
-    <div class="hero-art" id="heroArt"><div class="lumi-wrap" id="lumiWrap" role="button" tabindex="0" aria-label="Saludar a Lumine"><span class="lumi-hi" id="lumiBubble" aria-hidden="true">¡Hola! Soy Lumine 👋</span><img class="pose" id="heroPose" src="assets/lumi_hd_1_saluda.webp" alt="Lumine, la mascota de BitArt, saludando"><video class="pose" id="lumiVid" muted playsinline preload="auto" aria-hidden="true" style="display:none" src="assets/lumi_saluda.webm"></video></div></div>
+    <div class="hero-art" id="heroArt"><div class="lumi-wrap" id="lumiWrap" role="button" tabindex="0" aria-label="Saludar a Lumine"><span class="lumi-hi" id="lumiBubble" aria-hidden="true">Hola, soy Lumine</span><img class="pose" id="heroPose" src="assets/lumi_hd_1_saluda.webp" alt="Lumine, la mascota de BitArt, saludando"><video class="pose" id="lumiVid" muted playsinline preload="auto" aria-hidden="true" style="display:none" src="assets/lumi_saluda.webm"></video></div></div>
   </div>
   <div class="scroll-hint">Desliza ↓</div>
 </section>
@@ -490,8 +492,8 @@ const vid=$('#lumiVid'), still=$('#heroPose');
 const safari=/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent)||/iPhone|iPad/.test(navigator.userAgent);
 let vidOn=false;
 if(vid && !reduced && !safari && vid.canPlayType('video/webm; codecs="vp9"')){
-  vid.addEventListener('loadeddata',()=>{ vid.style.display=''; still.style.display='none'; vidOn=true; });
-  vid.addEventListener('error',()=>{ vidOn=false; vid.style.display='none'; still.style.display=''; });
+  vid.addEventListener('loadeddata',()=>{ vid.style.display=''; still.style.display='none'; vidOn=true; lw.classList.add('vid'); });
+  vid.addEventListener('error',()=>{ vidOn=false; lw.classList.remove('vid'); vid.style.display='none'; still.style.display=''; });
   vid.load();
 }
 function playVid(){
@@ -519,7 +521,7 @@ lw.addEventListener('click',wave);
 lw.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();wave()}});
 let heroVis=true;
 new IntersectionObserver(es=>{heroVis=es[0].isIntersecting},{threshold:.3}).observe($('#inicio'));
-if(!reduced){ setTimeout(wave,2600); setInterval(()=>{ if(heroVis&&!document.hidden) wave(); },9000); }
+if(!reduced){ setTimeout(wave,2600); setInterval(()=>{ if(heroVis&&!document.hidden) wave(); },12000); }
 /* en celular la entrada ya muestra a Lumine grande */
 
 /* proyectos: datos y ficha */
