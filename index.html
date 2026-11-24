@@ -210,8 +210,14 @@ nav.main a:hover::after,nav.main a.act::after{transform:scaleX(1)}
 .pills{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
 .pills span{background:var(--fondo);border-radius:99px;padding:7px 16px;font-size:14px}
 .bubble{position:relative;background:var(--marino);color:#fff;border-radius:18px;padding:12px 16px;font-size:14px;max-width:260px;margin-top:20px;transition:opacity .3s}
-.contact-lumi{display:block;width:min(230px,58vw);height:auto;margin:4px 0 0 22px;animation:bob 5s ease-in-out infinite}
-.bubble::after{content:"";position:absolute;bottom:-9px;left:128px;border:9px solid transparent;border-top-color:var(--marino);border-bottom:0}
+.lumi-call{position:relative;width:min(300px,74vw);margin-top:26px}
+.lumi-call video{display:block;width:100%;height:auto;aspect-ratio:840/960;margin-top:74px;mix-blend-mode:multiply;pointer-events:none}
+.lumi-call .bubble{position:absolute;left:0;top:-6px;z-index:2;margin:0;opacity:0;transform:translateY(8px) scale(.92);transform-origin:30px 100%;transition:opacity .35s,transform .45s cubic-bezier(.2,1.4,.4,1)}
+.lumi-call .bubble.show{opacity:1;transform:none}
+.lumi-call .bubble::after{left:calc(min(300px,74vw)*.40)}
+#contacto .wrap{z-index:auto}
+@media(min-width:960px){.contact-l{padding-top:6px}}
+.bubble::after{content:"";position:absolute;bottom:-9px;left:30px;border:9px solid transparent;border-top-color:var(--marino);border-bottom:0}
 form{background:#fff;border:2px solid var(--borde);border-radius:28px;padding:28px;display:grid;gap:16px}
 .two{display:grid;gap:16px}
 label{font-family:var(--f-ui);font-weight:600;font-size:14px;display:grid;gap:6px}
@@ -381,10 +387,14 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
 <section id="contacto" data-pose="none">
   <span class="orb a" style="width:380px;height:380px;left:-140px;bottom:40px"></span><span class="orb v" style="width:360px;height:360px;right:-100px;top:40px"></span>
   <div class="wrap contact">
-    <div class="reveal"><h2>Solicita una consultoría</h2><p class="sub">Cuéntanos tu idea y te respondemos en menos de 24 horas hábiles.</p>
-      <div class="pills"><span>✓ Diagnóstico gratuito</span><span>✓ Sin compromiso</span></div><p class="note">Arquitectura tecnológica inicial incluida.</p>
-      <div class="bubble" id="bubble">Hola, cuéntame tu idea. Yo te escucho.</div>
-      <img class="contact-lumi" src="assets/lumi_hd_5_celebra.webp" alt="Lumine celebrando" loading="lazy"></div>
+    <div class="contact-l">
+      <div class="reveal"><h2>Solicita una consultoría</h2><p class="sub">Cuéntanos tu idea y te respondemos en menos de 24 horas hábiles.</p>
+        <div class="pills"><span>✓ Diagnóstico gratuito</span><span>✓ Sin compromiso</span></div><p class="note">Arquitectura tecnológica inicial incluida.</p></div>
+      <div class="lumi-call">
+        <div class="bubble" id="bubble" role="status">Hola, cuéntame tu idea. Yo te escucho.</div>
+        <video id="callVid" muted loop playsinline preload="metadata" poster="assets/lumi_llamame_poster.webp" src="assets/lumi_llamame.mp4" role="img" aria-label="Lumine haciendo el gesto de llamada"></video>
+      </div>
+    </div>
     <form id="form" class="reveal" novalidate>
       <div class="two"><label>Nombre completo<input name="n" placeholder="Tu nombre" autocomplete="name"></label><label>Correo corporativo<input name="e" type="email" placeholder="nombre@empresa.com" autocomplete="email"></label></div>
       <div class="two"><label>Empresa (opcional)<input name="c" placeholder="Nombre de tu empresa" autocomplete="organization"></label><label>Tipo de solución<select name="t"><option value="">Selecciona una opción</option><option>Landing Page Premium</option><option>Portal Empresarial o e-commerce</option><option>Software a Medida o SaaS</option><option>Otras soluciones: móvil, IA, 3D</option></select></label></div>
@@ -557,9 +567,19 @@ function setQ(q,open){
 qs.forEach(q=>{ const a=$('.ans',q); a.style.height=q.classList.contains('open')?'auto':'0'; $('button',q).addEventListener('click',()=>{ const o=!q.classList.contains('open'); qs.forEach(x=>{ if(x!==q) setQ(x,false)}); setQ(q,o); }); });
 
 /* contacto: Lumine reacciona a cada campo */
-const bubble=$('#bubble');
+const bubble=$('#bubble'), callV=$('#callVid'); const hello=bubble.textContent; let lockMsg=false;
 const msgs={n:'¡Mucho gusto! ¿Cómo te llamas?',e:'Con tu correo te respondemos en menos de 24 horas.',c:'Si tienes empresa, cuéntame cuál. Es opcional.',t:'Elige lo que más se parezca a lo que necesitas.',i:'Cuéntame sin miedo: entre más detalle, mejor la propuesta.'};
-$$('#form [name]').forEach(f=>f.addEventListener('focus',()=>{ bubble.textContent=msgs[f.name]; if(hasGsap&&!reduced) gsap.fromTo(bubble,{scale:.9,opacity:.4},{scale:1,opacity:1,duration:.35,ease:'back.out(2)',transformOrigin:'30px 100%'}); }));
+/* la llamadita: el globo aparece mientras hace el gesto y todo se repite en bucle */
+if(callV){
+  let raf=0;
+  const tick=()=>{ if(!lockMsg){ const t=callV.currentTime; bubble.classList.toggle('show', t>.4&&t<3.9); } raf=requestAnimationFrame(tick); };
+  if(reduced){ bubble.classList.add('show'); }
+  else new IntersectionObserver(es=>{ if(es[0].isIntersecting){ const pr=callV.play(); if(pr&&pr.catch) pr.catch(()=>{}); if(!raf) tick(); } else { callV.pause(); cancelAnimationFrame(raf); raf=0; } },{threshold:.3}).observe(callV);
+}
+$$('#form [name]').forEach(f=>{
+  f.addEventListener('focus',()=>{ lockMsg=true; bubble.textContent=msgs[f.name]; bubble.classList.add('show'); });
+});
+$('#form').addEventListener('focusout',e=>{ if(!$('#form').contains(e.relatedTarget)){ lockMsg=false; bubble.textContent=hello; } });
 /* envío: lluvia de esferas (no envía datos) */
 const cv=$('#fx'), cx=cv.getContext('2d');
 function fit(){cv.width=innerWidth;cv.height=innerHeight} fit(); addEventListener('resize',fit);
