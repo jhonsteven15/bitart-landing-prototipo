@@ -398,7 +398,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-bet
         <div class="pills"><span>✓ Diagnóstico gratuito</span><span>✓ Sin compromiso</span></div><p class="note">Arquitectura tecnológica inicial incluida.</p></div>
       <div class="lumi-call">
         <div class="speech" id="bubble" role="status"><img src="assets/burbuja_ceramica.webp" alt=""><span class="btxt" id="btxt"><b>Cuéntame</b><b class="v">tu idea</b></span></div>
-        <video id="callVid" muted loop playsinline preload="metadata" poster="assets/lumi_llamame_poster.webp" src="assets/lumi_llamame.mp4" role="img" aria-label="Lumine haciendo el gesto de llamada"></video>
+        <video id="callVid" muted playsinline preload="auto" poster="assets/lumi_llamame_poster.webp" src="assets/lumi_llamame.mp4" role="img" aria-label="Lumine haciendo el gesto de llamada"></video>
       </div>
     </div>
     <form id="form" class="reveal" novalidate>
@@ -575,12 +575,19 @@ qs.forEach(q=>{ const a=$('.ans',q); a.style.height=q.classList.contains('open')
 /* contacto: Lumine reacciona a cada campo */
 const bubble=$('#bubble'), btxt=$('#btxt'), callV=$('#callVid'); const hello=btxt.innerHTML; let lockMsg=false;
 const msgs={n:'¡Mucho gusto! ¿Tu nombre?',e:'Te respondo en 24 horas.',c:'Tu empresa es opcional.',t:'Elige lo que necesitas.',i:'Cuéntame con detalle.'};
-/* la llamadita: el globo aparece mientras hace el gesto y todo se repite en bucle */
+/* la llamadita: hace el gesto una vez y se queda en la pose final con el mensaje; vuelve a empezar cada vez que entra a pantalla */
 if(callV){
   let raf=0;
-  const tick=()=>{ if(!lockMsg){ const t=callV.currentTime; bubble.classList.toggle('show', t>.5&&t<5.2); } raf=requestAnimationFrame(tick); };
-  if(reduced){ bubble.classList.add('show'); }
-  else new IntersectionObserver(es=>{ if(es[0].isIntersecting){ const pr=callV.play(); if(pr&&pr.catch) pr.catch(()=>{}); if(!raf) tick(); } else { callV.pause(); cancelAnimationFrame(raf); raf=0; } },{threshold:.3}).observe(callV);
+  const tick=()=>{ if(!lockMsg && callV.currentTime>.9) bubble.classList.add('show'); raf=requestAnimationFrame(tick); };
+  const stop=()=>{ cancelAnimationFrame(raf); raf=0; };
+  callV.addEventListener('ended',()=>{ stop(); if(!lockMsg) bubble.classList.add('show'); });
+  if(reduced){ callV.poster='assets/lumi_llamame_final.webp'; bubble.classList.add('show'); }
+  else new IntersectionObserver(es=>{
+    if(es[0].isIntersecting){
+      stop(); bubble.classList.remove('show'); callV.currentTime=0;
+      const pr=callV.play(); if(pr&&pr.catch) pr.catch(()=>{}); tick();
+    } else { callV.pause(); stop(); }
+  },{threshold:.5}).observe(callV);
 }
 $$('#form [name]').forEach(f=>{
   f.addEventListener('focus',()=>{ lockMsg=true; btxt.textContent=msgs[f.name]; bubble.classList.add('show'); });
